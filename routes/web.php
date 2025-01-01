@@ -8,9 +8,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/dashboard', [UeController::class,'index']
+)->name('dashboard');
+
 Route::get('/index', [UeController::class,'index'])->name('index');
 Route::get('/createUe', [UeController::class,'create'])->name('Ue.create');
 Route::post('/storeUe',[UeController::class,'store'])->name('Ue.store');
+Route::delete('/{id}/deleteUe',[UeController::class,'delete'])->name('Ue.delete');
 
 
 Route::get('/createEc', [EcController::class,'create'])->name('Ec.create');

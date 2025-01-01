@@ -16,10 +16,10 @@ class UeController extends Controller
     }
     public function store(Request $request){
         $rules=[
-            'code'=>'required|string|min:4',
+            'code'=>'required|string|min:4|regex:/^UE[0-9]{2}$/',
             'nom'=>'required|string|min:4',
             'credit'=>'required|integer',
-            'semestre'=>'required|integer'
+            'semestre'=>'required|integer|min:1|max:6'
         ];
         $validatedData = $request->validate($rules);
         $Ue = new unites_enseignement();
@@ -28,6 +28,12 @@ class UeController extends Controller
         $Ue -> credits_ects = $request->input('credit');
         $Ue -> semestre = $request->input('semestre');
         $Ue -> save();
+        return redirect()->route('index');
+    }
+
+    public function delete(string $id){
+        $Ue = unites_enseignement::findOrFail($id);
+        $Ue-> delete();
         return redirect()->route('index');
     }
 }
