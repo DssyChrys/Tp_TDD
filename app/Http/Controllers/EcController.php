@@ -17,19 +17,19 @@ class EcController extends Controller
     }
     public function store(Request $request){
         $rules=[
-            'code'=>'required|string|min:4',
+            'code'=>'required|string|min:4|regex:/^EC[0-9]{2}$/',
             'nom'=>'required|string|min:4',
             'coefficient'=>'required|integer',
-            'Ue_id'=>'required|integer'
+            'ue_id'=>'required|integer|exists:unites_enseignement,id'
         ];
         $validatedData = $request->validate($rules);
         $Ec = new elements_constitutifs();
         $Ec -> code = $request->input('code');
         $Ec -> nom = $request->input('nom');
         $Ec -> coefficient = $request->input('coefficient');
-        $Ec -> ue_id = $request->input('Ue_id');
+        $Ec -> ue_id = $request->input('ue_id');
         $Ec -> save();
-        return redirect()->route('index');
+        return redirect()->route('index')->with('message', 'EC créé avec succès');
     }
     public function edit(string $id){
         $ec = elements_constitutifs::findOrfail($id);
@@ -41,13 +41,13 @@ class EcController extends Controller
         $Ec -> code = $request->input('code');
         $Ec -> nom = $request->input('nom');
         $Ec -> coefficient = $request->input('coefficient');
-        $Ec -> ue_id = $request->input('Ue_id');
+        $Ec -> ue_id = $request->input('ue_id');
         $Ec -> update();
-        return redirect()->route('index');
+        return redirect()->route('index')->with('message', 'EC mis a jour avec succès');
     }
     public function delete(string $id){
         $Ec = elements_constitutifs::findOrFail($id);
         $Ec -> delete();
-        return redirect()->route('index');
+        return redirect()->route('index')->with('message', 'EC supprimer avec succès');
     }
 }
