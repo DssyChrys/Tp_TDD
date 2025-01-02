@@ -52,7 +52,7 @@ class EcController extends Controller
             ->where('id', '!=', $Ec->id) 
             ->sum('coefficient');
 
-        if (($coefficientSomme + $request->input('coefficient')) > $ue->credits) {
+        if (($coefficientSomme + $request->input('coefficient')) > $ue->credits_ects) {
             return back()->withErrors(['coefficient' => 'La somme des coefficients dépasse le nombre de crédits de l\'UE.']);
         }
         $Ec -> code = $request->input('code');
