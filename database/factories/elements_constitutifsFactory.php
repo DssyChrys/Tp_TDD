@@ -1,6 +1,10 @@
 <?php
+
 namespace Database\Factories;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
+
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\elements_constitutifs>
  */
@@ -21,4 +25,6 @@ class elements_constitutifsFactory extends Factory
             'ue_id'=> \App\Models\unites_enseignement::factory()
         ];
     }
+
 }
+
