@@ -31,17 +31,21 @@ class AppTest extends TestCase
             'semestre'=>'4'
         ];
 
+
         $response= $this->post(route('Ue.store'), $data);
         $this->assertDatabaseHas('unites_enseignement',$data);  
     }*/
+
 
     public function test_association_ec_a_une_ue()
     {
         $ue = unites_enseignement::factory()->create();
         elements_constitutifs::factory(3)->create(['ue_id' => $ue->id]);
 
+
         $this->assertCount(3, $ue->elements_constitutifs);
     }
+
 
     public function test_validation_format_du_code()
     {
@@ -72,7 +76,6 @@ class AppTest extends TestCase
     $this->assertStringContainsString('The semestre field must not be greater than 6', $response->json('errors.semestre')[0]);
     }
 
-
     //Test des Ecs
     public function test_creation_dune_EC_avec_coefficient_valide()
     {
@@ -85,6 +88,7 @@ class AppTest extends TestCase
         'ue_id' => $ue->id,
     ];
 
+
     $response = $this->post('/storeEc', $data);
 
     $response->assertStatus(302)
@@ -92,6 +96,7 @@ class AppTest extends TestCase
 
     $this->assertDatabaseHas('elements_constitutifs', $data);
     }
+
 
     public function test_ec_rattaché_a_ue()
     {
@@ -102,7 +107,9 @@ class AppTest extends TestCase
         'ue_id' => 999, // UE inexistante
     ];
 
+
     $response = $this->post('/storeEc', $data);
+
 
     $response->assertStatus(302);
     $response->assertSessionHasErrors(['ue_id']);
@@ -122,16 +129,19 @@ class AppTest extends TestCase
             'coefficient' => 2,
             'ue_id' => $ue->id,];
 
+
     $response = $this->put(route('Ec.update', ['id' => $ec->id]), $data);
 
     $response->assertStatus(302) 
              ->assertSessionHas('message', 'EC mis a jour avec succès');
+
 
     $this->assertDatabaseHas('elements_constitutifs', $data);
     }
     public function test_suppression_ec()
     {
     $ec = elements_constitutifs::factory()->create();
+
 
     $response = $this->delete(route('Ec.delete', $ec->id));
 
@@ -142,3 +152,4 @@ class AppTest extends TestCase
     }
 
 }
+

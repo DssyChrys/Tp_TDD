@@ -30,4 +30,10 @@ class UeController extends Controller
         $Ue -> save();
         return redirect()->route('index');
     }
+
+    public function delete(string $id){
+        $Ue = unites_enseignement::findOrFail($id);
+        $Ue-> delete();
+        return redirect()->route('index');
+    }
 }
