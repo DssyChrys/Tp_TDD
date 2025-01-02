@@ -37,7 +37,7 @@
 
         <div class="mb-4">
             <label for="Ue" class="block text-gray-700 font-semibold">Ue</label>
-            <select name="Ue_id" id="Ue_id" 
+            <select name="ue_id" id="ue_id" 
                     class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-blue-300">
                 @foreach($Ues as $Ue)
                     <option value="{{ $Ue->id }}" {{ $Ue->id == old('Ue') ? 'selected' : '' }}>

@@ -23,6 +23,12 @@ class EcController extends Controller
             'ue_id'=>'required|integer|exists:unites_enseignement,id'
         ];
         $validatedData = $request->validate($rules);
+        $ue = unites_enseignement::findOrFail($request->input('ue_id'));
+        $coefficientSomme = elements_constitutifs::where('ue_id', $ue->id)->sum('coefficient');
+
+        if (($coefficientSomme + $request->input('coefficient')) > $ue->credits_ects) {
+            return back()->withErrors(['coefficient' => 'La somme des coefficients dépasse le nombre de crédits de l\'UE.']);
+        }
         $Ec = new elements_constitutifs();
         $Ec -> code = $request->input('code');
         $Ec -> nom = $request->input('nom');
@@ -40,6 +46,15 @@ class EcController extends Controller
     }
     public function update(Request $request, string $id){
         $Ec = elements_constitutifs::findOrFail($id);
+
+        $ue = unites_enseignement::findOrFail($request->input('ue_id'));
+        $coefficientSomme = elements_constitutifs::where('ue_id', $ue->id)
+            ->where('id', '!=', $Ec->id) 
+            ->sum('coefficient');
+
+        if (($coefficientSomme + $request->input('coefficient')) > $ue->credits) {
+            return back()->withErrors(['coefficient' => 'La somme des coefficients dépasse le nombre de crédits de l\'UE.']);
+        }
         $Ec -> code = $request->input('code');
         $Ec -> nom = $request->input('nom');
         $Ec -> coefficient = $request->input('coefficient');
