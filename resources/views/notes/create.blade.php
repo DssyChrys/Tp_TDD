@@ -1,6 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
 <div class="container">
     <h1>Ajouter une Note</h1>
     <form action="{{ route('notes.store') }}" method="POST">
@@ -15,7 +22,7 @@
         </div>
         <div>
             <label for="ec_id">Élément Constitutif (EC) :</label>
-            <select name="ec_id" id="ec_id">
+            <select name="ec_id" id="ec_id" required>
                 @foreach($ecs as $ec)
                     <option value="{{ $ec->id }}">{{ $ec->code }} - {{ $ec->nom }}</option>
                 @endforeach

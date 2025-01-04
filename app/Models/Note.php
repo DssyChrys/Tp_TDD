@@ -29,5 +29,6 @@ public function ec()
     return $this->belongsTo(elements_constitutifs::class, 'ec_id');
 }
 
+
 }
 
