@@ -28,7 +28,9 @@ public function ec()
 {
     return $this->belongsTo(elements_constitutifs::class, 'ec_id');
 }
-
+public static $rules = [
+    'note' => 'required|numeric|min:0|max:20',
+];
 
 }
 

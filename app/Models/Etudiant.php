@@ -18,4 +18,8 @@ class Etudiant extends Model
 {
     return $this->hasMany(Note::class, 'etudiant_id');
 }
+public function moyenne() {
+    return $this->notes->avg('valeur');
+}
+
 }

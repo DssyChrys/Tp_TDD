@@ -22,4 +22,19 @@ class unites_enseignement extends Model
             }
         });
     }
+    
+
+public function calculerMoyenne()
+{
+    
+    return $this->notes()->avg('note');
+}
+ 
+
+public function notes()
+{
+    return $this->hasMany(Note::class);  
+}
+
+
 }
