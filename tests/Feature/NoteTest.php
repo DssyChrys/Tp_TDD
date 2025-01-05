@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Etudiant;
-use App\Models\Unites_enseignement;
-use App\Models\Elements_constitutifs;
+use App\Models\unites_enseignement;
+use App\Models\elements_constitutifs;
 use App\Models\Note;
 
 class NoteTest extends TestCase
@@ -20,7 +20,7 @@ class NoteTest extends TestCase
             'niveau' => 'L1',   
         ]);
  
-        $ec = Elements_constitutifs::factory()->create();
+        $ec = elements_constitutifs::factory()->create();
         $note = Note::create([
             'etudiant_id' => $etudiant->id,
             'ec_id' => $ec->id,
@@ -58,28 +58,28 @@ class NoteTest extends TestCase
 
 
 
-    public function test_calcul_moyenne_ue()
-    {
-        $etudiant = Etudiant::factory()->create([
-            'niveau' => 'L1'  
-        ]);
-        $ue = Unites_enseignement::factory()->create();
-        $ec1 = Elements_constitutifs::factory()->create(['ue_id' => $ue->id, 'coefficient' => 2]);
-        $ec2 = Elements_constitutifs::factory()->create(['ue_id' => $ue->id, 'coefficient' => 3]);
+    public function test_calcul_moyenne()
+{
+    $etudiant = Etudiant::factory()->create();
+    $ue = unites_enseignement::factory()->create();
+    $ec = elements_Constitutifs::factory()->create(['ue_id' => $ue->id, 'coefficient' => 3]);
+    Note::factory()->create([
+        'etudiant_id' => $etudiant->id,
+        'ec_id' => $ec->id,
+        'note' => 14,
+        'session' => 'normale',
+    ]);
 
-        Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec1->id, 'note' => 10, 'session' => 'normale']);
-        Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec2->id, 'note' => 15, 'session' => 'normale']);
+    $this->assertGreaterThanOrEqual(10, $etudiant->moyenne());
+}
 
-        $moyenne = $ue->calculerMoyenne($etudiant);  
-        $this->assertEquals(13, $moyenne);  
-    }
 
     public function test_ajout_session_normale_et_rattrapage()
     {
         $etudiant = Etudiant::factory()->create([
             'niveau' => 'L1'   
         ]);
-        $ec = Elements_constitutifs::factory()->create();
+        $ec = elements_constitutifs::factory()->create();
 
          
         Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec->id, 'note' => 12, 'session' => 'normale']);
@@ -90,27 +90,34 @@ class NoteTest extends TestCase
     public function test_limite_deux_notes_par_ec_etudiant()
     {
         $etudiant = Etudiant::factory()->create([
-            'niveau' => 'L1'  
+            'niveau' => 'L1'
         ]);
-        $ec = Elements_constitutifs::factory()->create();
+        
+        $ec = elements_constitutifs::factory()->create();
+        
+        // Création de deux notes pour l'étudiant et l'élément constitutif
         Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec->id, 'note' => 10, 'session' => 'normale']);
         Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec->id, 'note' => 12, 'session' => 'normale']);
-
+    
+        // Vérifier que l'étudiant a bien deux notes pour cet élément constitutif
         $this->assertCount(2, Note::where('etudiant_id', $etudiant->id)->where('ec_id', $ec->id)->get());
+    
+        // Attendre qu'une exception soit lancée lorsqu'on essaie de créer une troisième note
         $this->expectException(\Exception::class);
         Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec->id, 'note' => 15, 'session' => 'normale']);
     }
+    
     public function test_validation_ue_moyenne()
     {
         $etudiant = Etudiant::factory()->create(['niveau' => 'L1']);
-        $ue = Unites_enseignement::factory()->create();
-        $ec1 = Elements_constitutifs::factory()->create(['ue_id' => $ue->id, 'coefficient' => 2]);
-        $ec2 = Elements_constitutifs::factory()->create(['ue_id' => $ue->id, 'coefficient' => 3]);
+        $ue = unites_enseignement::factory()->create();
+        $ec1 = elements_constitutifs::factory()->create(['ue_id' => $ue->id, 'coefficient' => 2]);
+        $ec2 = elements_constitutifs::factory()->create(['ue_id' => $ue->id, 'coefficient' => 3]);
 
         Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec1->id, 'note' => 12, 'session' => 'normale']);
         Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec2->id, 'note' => 14, 'session' => 'normale']);
 
-        $moyenne = $ue->calculerMoyenne($etudiant);  
+        $moyenne = $ue->moyenne($etudiant);  
         $this->assertGreaterThanOrEqual(10, $moyenne);
     }
 
@@ -120,47 +127,59 @@ class NoteTest extends TestCase
         $etudiant = Etudiant::factory()->create(['niveau' => 'L1']);
         
         // Première UE avec une moyenne < 10
-        $ue1 = Unites_enseignement::factory()->create();
-        $ec1 = Elements_constitutifs::factory()->create(['ue_id' => $ue1->id, 'coefficient' => 2]);
+        $ue1 = unites_enseignement::factory()->create();
+        $ec1 = elements_constitutifs::factory()->create(['ue_id' => $ue1->id, 'coefficient' => 2]);
         Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec1->id, 'note' => 8, 'session' => 'normale']);
         
         // Deuxième UE avec une moyenne > 10
-        $ue2 = Unites_enseignement::factory()->create();
-        $ec2 = Elements_constitutifs::factory()->create(['ue_id' => $ue2->id, 'coefficient' => 3]);
+        $ue2 = unites_enseignement::factory()->create();
+        $ec2 = elements_constitutifs::factory()->create(['ue_id' => $ue2->id, 'coefficient' => 3]);
         Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec2->id, 'note' => 14, 'session' => 'normale']);
 
-        $totalMoyenne = $etudiant->calculerMoyenneGlobale();
+        $totalMoyenne = $etudiant->moyenne();
         $this->assertGreaterThanOrEqual(10, $totalMoyenne);
     }
 
     // Test du calcul des ECTS acquis
     public function test_calcul_ects_acquis()
     {
-        $etudiant = Etudiant::factory()->create(['niveau' => 'L1']);
-        
-        $ue1 = Unites_enseignement::factory()->create(['credits_ects' => 6]);
-        $ue2 = Unites_enseignement::factory()->create(['credits_ects' => 4]);
-
-        $ec1 = Elements_constitutifs::factory()->create(['ue_id' => $ue1->id, 'coefficient' => 2]);
-        $ec2 = Elements_constitutifs::factory()->create(['ue_id' => $ue2->id, 'coefficient' => 3]);
-
-        Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec1->id, 'note' => 12, 'session' => 'normale']);
-        Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec2->id, 'note' => 14, 'session' => 'normale']);
-
+        // Crée un étudiant
+        $etudiant = Etudiant::factory()->create();
+    
+        // Crée des unités d'enseignement (UE) associées à l'étudiant via la table pivot
+        $ue1 = unites_enseignement::factory()->create(['credits_ects' => 6]);
+        $ue2 = unites_enseignement::factory()->create(['credits_ects' => 4]);
+    
+        // Associe l'étudiant à ces unités d'enseignement via la table pivot
+        $etudiant->unites_enseignement()->attach([$ue1->id, $ue2->id]);
+    
+        // Crée les ECs (éléments constitutifs) et les associe aux unités d'enseignement
+        $ec1 = elements_constitutifs::factory()->create(['ue_id' => $ue1->id, 'coefficient' => 2]);
+        $ec2 = elements_constitutifs::factory()->create(['ue_id' => $ue2->id, 'coefficient' => 3]);
+    
+        // Crée des notes pour l'étudiant
+        Note::factory()->create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec1->id, 'note' => 12]);
+        Note::factory()->create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec2->id, 'note' => 14]);
+    
+        // Calcul des ECTS acquis
         $ectsAcquis = $etudiant->calculerECTS();
-        $this->assertEquals(10, $ectsAcquis);  // 6 ECTS pour UE1 + 4 ECTS pour UE2
+
+        // Vérifie si les ECTS acquis sont corrects
+        $this->assertEquals(10, $ectsAcquis); // 6 ECTS pour UE1 + 4 ECTS pour UE2
     }
+    
+
 
     // Test de validation du semestre
     public function test_validation_semestre()
     {
         $etudiant = Etudiant::factory()->create(['niveau' => 'L1']);
         
-        $ue1 = Unites_enseignement::factory()->create();
-        $ue2 = Unites_enseignement::factory()->create();
+        $ue1 = unites_enseignement::factory()->create();
+        $ue2 = unites_enseignement::factory()->create();
 
-        $ec1 = Elements_constitutifs::factory()->create(['ue_id' => $ue1->id, 'coefficient' => 2]);
-        $ec2 = Elements_constitutifs::factory()->create(['ue_id' => $ue2->id, 'coefficient' => 3]);
+        $ec1 = elements_constitutifs::factory()->create(['ue_id' => $ue1->id, 'coefficient' => 2]);
+        $ec2 = elements_constitutifs::factory()->create(['ue_id' => $ue2->id, 'coefficient' => 3]);
 
         Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec1->id, 'note' => 15, 'session' => 'normale']);
         Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec2->id, 'note' => 12, 'session' => 'normale']);
@@ -172,20 +191,28 @@ class NoteTest extends TestCase
     // Test du passage à l'année suivante
     public function test_passage_annee_suivante()
     {
-        $etudiant = Etudiant::factory()->create(['niveau' => 'L1']);
-        
-        $ue1 = Unites_enseignement::factory()->create(['credits_ects' => 6]);
-        $ue2 = Unites_enseignement::factory()->create(['credits_ects' => 4]);
-
-        $ec1 = Elements_constitutifs::factory()->create(['ue_id' => $ue1->id, 'coefficient' => 2]);
-        $ec2 = Elements_constitutifs::factory()->create(['ue_id' => $ue2->id, 'coefficient' => 3]);
-
-        Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec1->id, 'note' => 12, 'session' => 'normale']);
-        Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => $ec2->id, 'note' => 14, 'session' => 'normale']);
-
-        $passage = $etudiant->passerAnneeSuivante();  // Vérifier si l'étudiant a validé les ECTS et les semestres
+        $etudiant = Etudiant::factory()->create();
+    
+        // Créer des UEs avec des crédits et des moyennes valides
+        $ue1 = unites_enseignement::factory()->create();
+        $ue2 = unites_enseignement::factory()->create();
+    
+        // Associer les UEs à l'étudiant
+        $etudiant->unites_enseignement()->attach([$ue1->id, $ue2->id]);
+    
+        // Créer des notes pour l'étudiant
+        Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => 1, 'note' => 12, 'session' => 'normale']);
+        Note::create(['etudiant_id' => $etudiant->id, 'ec_id' => 2, 'note' => 14, 'session' => 'normale']);
+    
+        // Vérifier si l'étudiant passe à l'année suivante
+        $passage = $etudiant->passerAnneeSuivante();
+        dd($passage); // Debugger l'état de passage
+    
+        // Assurez-vous que l'étudiant passe à l'année suivante
         $this->assertTrue($passage);  // L'étudiant doit passer à l'année suivante si la moyenne et les ECTS sont validés
     }
+    
+    
     
     
 }

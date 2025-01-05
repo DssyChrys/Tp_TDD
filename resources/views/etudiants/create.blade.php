@@ -1,15 +1,13 @@
- 
-
-@extends('layouts.app')
+@extends('dashboard')
 
 @section('content')
-    <div class="container">
-        <h1>Ajouter un Étudiant</h1>
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <form action="{{ route('etudiants.store') }}" method="POST" class="bg-white p-8 rounded shadow-md w-full max-w-lg">
+        @csrf
 
-         
         @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
+            <div class="bg-red-100 text-red-600 p-4 rounded mb-4">
+                <ul class="list-disc list-inside">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -17,37 +15,44 @@
             </div>
         @endif
 
-         
-        <form action="{{ route('etudiants.store') }}" method="POST">
-            @csrf
+        <div class="mb-4">
+            <label for="matricule" class="block text-gray-700 font-semibold">Numéro étudiant :</label>
+            <input type="text" name="matricule" id="matricule" 
+                   class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-blue-300" 
+                   value="{{ old('matricule') }}" required>
+        </div>
 
-            <div class="mb-3">
-                <label for="matricule" class="form-label">Numéro étudiant :</label>
-                <input type="text" name="matricule" id="matricule" class="form-control" value="{{ old('matricule') }}" required>
-            </div>
+        <div class="mb-4">
+            <label for="nom" class="block text-gray-700 font-semibold">Nom :</label>
+            <input type="text" name="nom" id="nom" 
+                   class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-blue-300" 
+                   value="{{ old('nom') }}" required>
+        </div>
 
-            <div class="mb-3">
-                <label for="nom" class="form-label">Nom :</label>
-                <input type="text" name="nom" id="nom" class="form-control" value="{{ old('nom') }}" required>
-            </div>
+        <div class="mb-4">
+            <label for="prenom" class="block text-gray-700 font-semibold">Prénom :</label>
+            <input type="text" name="prenom" id="prenom" 
+                   class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-blue-300" 
+                   value="{{ old('prenom') }}" required>
+        </div>
 
-            <div class="mb-3">
-                <label for="prenom" class="form-label">Prénom :</label>
-                <input type="text" name="prenom" id="prenom" class="form-control" value="{{ old('prenom') }}" required>
-            </div>
+        <div class="mb-4">
+            <label for="niveau" class="block text-gray-700 font-semibold">Niveau :</label>
+            <select name="niveau" id="niveau" 
+                    class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-blue-300" 
+                    required>
+                <option value="L1" {{ old('niveau') == 'L1' ? 'selected' : '' }}>L1</option>
+                <option value="L2" {{ old('niveau') == 'L2' ? 'selected' : '' }}>L2</option>
+                <option value="L3" {{ old('niveau') == 'L3' ? 'selected' : '' }}>L3</option>
+            </select>
+        </div>
 
-            <div class="mb-3">
-                <label for="niveau" class="form-label">Niveau :</label>
-                <select name="niveau" id="niveau" class="form-control" required>
-                    <option value="L1" {{ old('niveau') == 'L1' ? 'selected' : '' }}>L1</option>
-                    <option value="L2" {{ old('niveau') == 'L2' ? 'selected' : '' }}>L2</option>
-                    <option value="L3" {{ old('niveau') == 'L3' ? 'selected' : '' }}>L3</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Ajouter</button>
-            </div>
-        </form>
-    </div>
+        <div class="text-center">
+            <button type="submit" 
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:ring focus:ring-blue-300">
+                Ajouter
+            </button>
+        </div>
+    </form>
+</div>
 @endsection

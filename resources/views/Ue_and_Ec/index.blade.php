@@ -67,8 +67,8 @@
     @endforeach
 
     <footer class="bg-blue-600 py-4 mt-10">
-    <div class="flex justify-center">
-        <form action="" method="POST">
+   <div class="flex justify-center">
+        <form action="" method="">
             @csrf
             <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600 transition duration-300">
                 Enregistrer les notes

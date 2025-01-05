@@ -18,14 +18,14 @@ class UeController extends Controller
         $rules=[
             'code'=>'required|string|min:4|regex:/^UE[0-9]{2}$/',
             'nom'=>'required|string|min:4',
-            'credit'=>'required|integer',
+            'credits_ects'=>'required|integer|max:30',
             'semestre'=>'required|integer|min:1|max:6'
         ];
         $validatedData = $request->validate($rules);
         $Ue = new unites_enseignement();
         $Ue -> code = $request->input('code');
         $Ue -> nom = $request->input('nom');
-        $Ue -> credits_ects = $request->input('credit');
+        $Ue -> credits_ects = $request->input('credits_ects');
         $Ue -> semestre = $request->input('semestre');
         $Ue -> save();
         return redirect()->route('index');

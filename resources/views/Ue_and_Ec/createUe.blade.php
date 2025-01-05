@@ -29,8 +29,8 @@
         </div>
 
         <div class="mb-4">
-            <label for="credit" class="block text-gray-700 font-semibold">Crédit</label>
-            <input type="text" name="credit" id="credit" 
+            <label for="credits_ects" class="block text-gray-700 font-semibold">Crédit</label>
+            <input type="text" name="credits_ects" id="credits_ects" 
                    class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-blue-300" 
                    required>
         </div>

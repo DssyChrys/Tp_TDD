@@ -17,7 +17,24 @@ class Note extends Model
         'date_evaluation',
     ];
 
-     
+    public static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($note) {
+            $existingNotesCount = Note::where('etudiant_id', $note->etudiant_id)
+                                      ->where('ec_id', $note->ec_id)
+                                      ->count();
+            
+            if ($existingNotesCount >= 2) {
+                throw new \Exception("Un étudiant ne peut avoir que deux notes par élément constitutif.");
+            }
+        });
+    }
+    public function unites_enseignement()
+    {
+        return $this->belongsToMany(unites_enseignement::class, 'table_pivot', 'note_id', 'unites_enseignement_id');
+    }
 
 public function etudiant()
 {

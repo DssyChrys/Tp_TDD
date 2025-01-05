@@ -29,19 +29,19 @@ class AppTest extends TestCase
         ]);
     }
     
-    /*public function test_validation_des_credits_entre_1_et_30(): void
+    public function test_credits_ects_ne_peuvent_pas_depasser_30()
     {
-        $data=[
-            'code'=>'UE14',
-            'nom'=>'bureautique',
-            'credits_ects'=>'32',
-            'semestre'=>'4'
-        ];
-
-
-        $response= $this->post(route('Ue.store'), $data);
-        $this->assertDatabaseHas('unites_enseignement',$data);  
-    }*/
+        $response = $this->post(route('Ue.store'), [
+            'code' => 'UE14',
+            'nom' => 'bureautique',
+            'credits_ects' => '32', // Ce crédit dépasse 30
+            'semestre' => '4'
+        ]);
+    
+        // Vérifiez que la validation échoue et retourne une erreur
+        $response->assertSessionHasErrors(['credits_ects']);
+    }
+    
 
 
     public function test_association_ec_a_une_ue()

@@ -5,14 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Elements_constitutifs extends Model
+class elements_constitutifs extends Model
 {
     use HasFactory;
 
     protected $fillable = ['code', 'nom', 'coefficient', 'ue_id'];
+    public static function boot()
+    {
+        parent::boot();
 
+        static::creating(function ($model) {
+            if ($model->credits_ects > 30) {
+                throw new \Exception("Le nombre de crédits ne peut pas dépasser 30.");
+            }
+        });
+    }
     public function unites_enseignement(){
-        return $this->belongsTo(Unites_enseignement::class, 'ue_id', 'id');
+        return $this->belongsTo(unites_enseignement::class, 'ue_id', 'id');
     }
     
 public function notes()

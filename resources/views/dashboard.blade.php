@@ -19,6 +19,7 @@
 
             <!-- Menu pour grand écran -->
             <div class="hidden md:flex space-x-6">
+                <a href="{{ route('index') }}" class="text-gray-300 hover:text-white">Dashboard</a>
                 <a href="{{ route('etudiants.index') }}" class="text-gray-300 hover:text-white">Liste des Étudiants</a>
                 <a href="{{ route('notes.index') }}" class="text-gray-300 hover:text-white">Liste des Notes</a>
                 <a href="" class="text-gray-300 hover:text-white">Nos Meilleurs Profils</a>
@@ -38,6 +39,7 @@
 
     <!-- Menu mobile -->
     <div id="mobile-menu" class="hidden md:hidden bg-gray-600">
+        <a href="{{ route('index') }}" class="block text-gray-300 hover:text-white px-4 py-2">Dashboard</a>
         <a href="{{ route('etudiants.index') }}" class="block text-gray-300 hover:text-white px-4 py-2">Liste des Étudiants</a>
         <a href="{{ route('notes.index') }}" class="block text-gray-300 hover:text-white px-4 py-2">Liste des Notes</a>
         <a href="" class="block text-gray-300 hover:text-white px-4 py-2">Nos Meilleurs Profils</a>
