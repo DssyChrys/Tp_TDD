@@ -11,17 +11,24 @@ use Tests\TestCase;
 class AppTest extends TestCase
 {
     //Test des UEs
-    public function test_creation_dune_UE(){
-        $data=[
-            'code'=>'UE13',
-            'nom'=>'electronique',
-            'credits_ects'=>'4',
-            'semestre'=>'4'
+    public function test_creation_dune_UE()
+    {
+        $data = [
+            'code' => 'UE13',            
+            'nom' => 'electronique',    
+            'credit' => 4,               
+            'semestre' => 4,             
         ];
-
-        $response= $this->post(route('Ue.store'), $data);
-        $this->assertDatabaseHas('unites_enseignement',$data);  
-    } 
+        $response = $this->post(route('Ue.store'), $data);
+        $response->assertStatus(302);   
+        $this->assertDatabaseHas('unites_enseignement', [
+            'code' => 'UE13',
+            'nom' => 'electronique',
+            'credits_ects' => 4,   
+            'semestre' => 4,
+        ]);
+    }
+    
     /*public function test_validation_des_credits_entre_1_et_30(): void
     {
         $data=[
@@ -152,4 +159,3 @@ class AppTest extends TestCase
     }
 
 }
-

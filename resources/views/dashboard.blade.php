@@ -19,7 +19,8 @@
 
             <!-- Menu pour grand écran -->
             <div class="hidden md:flex space-x-6">
-                <a href="" class="text-gray-300 hover:text-white">Liste des Étudiants</a>
+                <a href="{{ route('etudiants.index') }}" class="text-gray-300 hover:text-white">Liste des Étudiants</a>
+                <a href="{{ route('notes.index') }}" class="text-gray-300 hover:text-white">Liste des Notes</a>
                 <a href="" class="text-gray-300 hover:text-white">Nos Meilleurs Profils</a>
                 <a href="" class="text-gray-300 hover:text-white">À Propos</a>
             </div>
@@ -37,7 +38,8 @@
 
     <!-- Menu mobile -->
     <div id="mobile-menu" class="hidden md:hidden bg-gray-600">
-        <a href="" class="block text-gray-300 hover:text-white px-4 py-2">Liste des Étudiants</a>
+        <a href="{{ route('etudiants.index') }}" class="block text-gray-300 hover:text-white px-4 py-2">Liste des Étudiants</a>
+        <a href="{{ route('notes.index') }}" class="block text-gray-300 hover:text-white px-4 py-2">Liste des Notes</a>
         <a href="" class="block text-gray-300 hover:text-white px-4 py-2">Nos Meilleurs Profils</a>
         <a href="" class="block text-gray-300 hover:text-white px-4 py-2">À Propos</a>
     </div>
@@ -48,20 +50,19 @@
     <h1>Salut</h1>
 </div>
 
-
-
-
 <div class="min-h-screen w-full bg-gray-100">
-
-        
-        @yield(section: 'content')
-
+    @yield('content')
 </div>
 
-
-
-
+<script>
+    // Script pour gérer le menu mobile
+    const menuButton = document.getElementById("mobile-menu-button");
+    const mobileMenu = document.getElementById("mobile-menu");
     
-    
+    menuButton.addEventListener("click", function() {
+        mobileMenu.classList.toggle("hidden");
+    });
+</script>
+
 </body>
 </html>
